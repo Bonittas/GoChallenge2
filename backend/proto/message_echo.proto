@@ -1,13 +1,15 @@
 syntax = "proto3";
 
+option go_package = "your/go/package/path";
+
 service MessageEchoService {
-    rpc EchoMessage(EchoMessageRequest) returns (EchoMessageResponse);
+  rpc EchoMessage(EchoRequest) returns (EchoResponse) {}
 }
 
-message EchoMessageRequest {
-    string message = 1;
+message EchoRequest {
+  string message = 1;
 }
 
-message EchoMessageResponse {
-    string message = 1;
+message EchoResponse {
+  string message = 1;
 }
