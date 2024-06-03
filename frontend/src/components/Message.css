@@ -1,0 +1,77 @@
+/* App.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #fff;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .heading {
+    margin-bottom: 100px;
+    font-size: 2rem;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .input {
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: #333;
+    color: #fff;
+    width: 300px;
+    transition: all 0.3s ease;
+  }
+  
+  .input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #0c0d0e;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: fadeIn 1.5s ease-in-out;
+  }
+  
+  .button:hover {
+    background-color: #000000;
+  }
+  
+  .response {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #3f3a3a;
+    border-radius: 5px;
+    border: 1px solid #444;
+    width: 300px;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  

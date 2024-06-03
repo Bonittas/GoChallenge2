@@ -1,0 +1,21 @@
+// service.proto
+
+syntax = "proto3";
+
+option go_package = ".";
+
+// Define the service
+service BackendService {
+    // Method to ping the server
+    rpc Ping(PingRequest) returns (PingResponse);
+}
+
+// Request message for the Ping method
+message PingRequest {
+    string message = 1;
+}
+
+// Response message for the Ping method
+message PingResponse {
+    string message = 1;
+}
