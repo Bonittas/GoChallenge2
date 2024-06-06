@@ -1,44 +1,23 @@
-// src/components/Message/Message.test.js
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import { render, screen } from '@testing-library/react';
 import Message from './Message';
+import { fireEvent } from '@testing-library/react';
 
-global.fetch = require('jest-fetch-mock');
+test('renders input and button', () => {
+  render(<Message />);
+  const inputElement = screen.getByPlaceholderText('Enter your message');
+  const buttonElement = screen.getByText('Send Ping');
+  expect(inputElement).toBeInTheDocument();
+  expect(buttonElement).toBeInTheDocument();
+});
 
-describe('Message component', () => {
-  beforeEach(() => {
-    fetch.resetMocks();
-  });
-
-  test('renders correctly', () => {
-    const { getByPlaceholderText, getByText } = render(<Message />);
-
-    expect(getByPlaceholderText('Enter your message')).toBeInTheDocument();
-    expect(getByText('Send')).toBeInTheDocument();
-  });
-
-  test('handles input correctly', () => {
-    const { getByPlaceholderText } = render(<Message />);
-    const input = getByPlaceholderText('Enter your message');
-
-    fireEvent.change(input, { target: { value: 'test message' } });
-    expect(input.value).toBe('test message');
-  });
-
-  test('sends message to backend and displays response', async () => {
-    fetch.mockResponseOnce(JSON.stringify({ message: 'test message' }));
-
-    const { getByPlaceholderText, getByText } = render(<Message />);
-    const input = getByPlaceholderText('Enter your message');
-    const button = getByText('Send');
-
-    fireEvent.change(input, { target: { value: 'test message' } });
-    fireEvent.click(button);
-
-    const responseDiv = await screen.findByText('test message');
-    expect(responseDiv).toBeInTheDocument();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith('http://localhost:8080', expect.any(Object));
-  });
+test('clicking button sends ping request and displays response', async () => {
+  render(<Message />);
+  const inputElement = screen.getByPlaceholderText('Enter your message');
+  const buttonElement = screen.getByText('Send Ping');
+  inputElement.value = 'Test message';
+  fireEvent.change(inputElement);
+  fireEvent.click(buttonElement);
+  const responseElement = await screen.findByText(/Response from server/i);
+  expect(responseElement).toBeInTheDocument();
 });

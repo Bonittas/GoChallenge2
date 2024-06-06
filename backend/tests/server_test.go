@@ -1,55 +1,34 @@
-package tests
+package main_test
 
 import (
-	"bytes"
-	"encoding/json"
-	"net/http"
-	"net/http/httptest"
+	"context"
 	"testing"
 
-	"github.com/Bonittas/GoChallenge2/proto"
-	"github.com/gorilla/mux"
+	pb "github.com/Bonittas/GoChallenge2/proto"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc"
 )
 
-func TestHTTPPing(t *testing.T) {
-	router := mux.NewRouter()
-
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
-		var req proto.PingRequest
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		resp := &proto.PingResponse{Message: req.Message}
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(resp)
-	}).Methods("POST", "OPTIONS")
-
-	rr := httptest.NewRecorder()
-
-	reqBody := []byte(`{"message": "test message"}`)
-
-	req, err := http.NewRequest("POST", "/", bytes.NewBuffer(reqBody))
+func TestGRPCPing(t *testing.T) {
+	// Connect to the gRPC server
+	conn, err := grpc.Dial(":50051", grpc.WithInsecure())
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("failed to connect to gRPC server: %v", err)
+	}
+	defer conn.Close()
+
+	// Create a gRPC client
+	client := pb.NewPingServiceClient(conn)
+
+	// Create a PingRequest
+	req := &pb.PingRequest{Message: "test message"}
+
+	// Call the Ping method on the server
+	resp, err := client.Ping(context.Background(), req)
+	if err != nil {
+		t.Fatalf("failed to call Ping RPC: %v", err)
 	}
 
-	router.ServeHTTP(rr, req)
-
-	assert.Equal(t, http.StatusOK, rr.Code)
-
-	var resp proto.PingResponse
-	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
-		t.Fatal(err)
-	}
-
+	// Assert the response
 	assert.Equal(t, "test message", resp.Message)
 }
-

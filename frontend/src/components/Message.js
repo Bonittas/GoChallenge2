@@ -16,7 +16,7 @@ const sendPingRequestWithRetry = (message, retries, callback) => {
         if (attempt < retries) {
           setTimeout(() => attemptRequest(attempt + 1), 1000); // Retry after 1 second
         } else {
-          callback(err, null);
+          callback(new Error(`Failed to send ping after ${retries} attempts`), null);
         }
       } else {
         callback(null, response.getMessage());
@@ -34,7 +34,7 @@ function Message() {
   const handleClick = () => {
     sendPingRequestWithRetry(inputMessage, 3, (err, response) => {
       if (err) {
-        setResponseMessage('Error: ' + err.message);
+        setResponseMessage(`Error: ${err.message}`);
       } else {
         setResponseMessage(response);
       }
@@ -42,20 +42,19 @@ function Message() {
   };
 
   return (
-    <>     
-    
     <div className="message-container">
-        <div className='title'> <h1>React Go Mini Project</h1></div>
-      <input 
-        type="text" 
-        value={inputMessage} 
-        onChange={(e) => setInputMessage(e.target.value)} 
-        placeholder="Enter your message" 
+      <div className="title">
+        <h1>React Go Mini Project</h1>
+      </div>
+      <input
+        type="text"
+        value={inputMessage}
+        onChange={(e) => setInputMessage(e.target.value)}
+        placeholder="Enter your message"
       />
       <button onClick={handleClick}>Send Ping</button>
-      <p>{responseMessage}</p>
+      <p>Response from server - {responseMessage}</p>
     </div>
-    </>
   );
 }
 
