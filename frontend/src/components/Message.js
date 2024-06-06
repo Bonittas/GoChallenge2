@@ -1,49 +1,62 @@
 import React, { useState } from 'react';
-import './Message.css';  // Import the CSS file
+import { PingServiceClient } from '../proto/service_grpc_web_pb';
+import { PingRequest } from '../proto/service_pb';
+import './Message.css';
 
-function Message() {
-  const [inputValue, setInputValue] = useState('');
-  const [response, setResponse] = useState('');
+const backendService = new PingServiceClient('http://localhost:8080');
 
-  const handleChange = (event) => {
-    setInputValue(event.target.value);
+const sendPingRequestWithRetry = (message, retries, callback) => {
+  const attemptRequest = (attempt) => {
+    const request = new PingRequest();
+    request.setMessage(message);
+
+    backendService.ping(request, {}, (err, response) => {
+      if (err) {
+        console.error('Error:', err.message);
+        if (attempt < retries) {
+          setTimeout(() => attemptRequest(attempt + 1), 1000); // Retry after 1 second
+        } else {
+          callback(err, null);
+        }
+      } else {
+        callback(null, response.getMessage());
+      }
+    });
   };
 
+  attemptRequest(0);
+};
+
+function Message() {
+  const [inputMessage, setInputMessage] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
+
   const handleClick = () => {
-    // Send the input value to the backend
-    fetch('http://localhost:8080', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: inputValue }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Set the response from the backend
-        setResponse(data.message);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    sendPingRequestWithRetry(inputMessage, 3, (err, response) => {
+      if (err) {
+        setResponseMessage('Error: ' + err.message);
+      } else {
+        setResponseMessage(response);
+      }
+    });
   };
 
   return (
-    <div className="container">
-      <h1 className="heading">Hello Welocome to React-Go Full Stack Application</h1>
-      <input
-        type="text"
-        value={inputValue}
-        onChange={handleChange}
-        className="input"
-        placeholder="Enter your message"
+    <>     
+    
+    <div className="message-container">
+        <div className='title'> <h1>React Go Mini Project</h1></div>
+      <input 
+        type="text" 
+        value={inputMessage} 
+        onChange={(e) => setInputMessage(e.target.value)} 
+        placeholder="Enter your message" 
       />
-      <button onClick={handleClick} className="button">
-        Send
-      </button>
-      <div className="response">{response}</div>
+      <button onClick={handleClick}>Send Ping</button>
+      <p>{responseMessage}</p>
     </div>
+    </>
   );
 }
 
-export default Message
+export default Message;

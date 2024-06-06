@@ -1,77 +1,96 @@
-/* App.css */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #fff;
+.message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+  animation: fadeIn 1s ease-in-out;
+}
+.title{
+  margin-bottom:90px;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .heading {
-    margin-bottom: 100px;
-    font-size: 2rem;
-    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes buttonPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
   }
-  
-  .input {
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #333;
-    background-color: #333;
-    color: #fff;
-    width: 300px;
-    transition: all 0.3s ease;
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 1);
   }
-  
-  .input:focus {
-    border-color: #007bff;
-    outline: none;
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
   }
-  
-  .button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: none;
-    background-color: #0c0d0e;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    animation: fadeIn 1.5s ease-in-out;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  animation: textGlow 1.5s infinite alternate;
+}
+
+@keyframes textGlow {
+  from {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
   }
-  
-  .button:hover {
-    background-color: #000000;
+  to {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 1);
   }
-  
-  .response {
-    margin-top: 20px;
-    padding: 10px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #3f3a3a;
-    border-radius: 5px;
-    border: 1px solid #444;
-    width: 300px;
-    text-align: center;
-    animation: fadeIn 2s ease-in-out;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
+}
+
+.message-container input {
+  margin-bottom: 20px;
+  padding: 12px;
+  width: 300px;
+  font-size: 1rem;
+  color: #f0f0f0;
+  background-color: #333;
+  border: 2px solid #555;
+  border-radius: 5px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.message-container input:focus {
+  border-color: #777;
+}
+
+.message-container button {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  background-color: #444;
+  color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  animation: buttonPulse 2s infinite;
+}
+
+.message-container button:hover {
+  background-color: #666;
+  transform: scale(1.05);
+}
+
+.message-container p {
+  margin-top: 30px;
+  font-size: 1.5rem;
+  color: #f0f0f0;
+}

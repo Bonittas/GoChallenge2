@@ -1,20 +1,17 @@
-version: '3.8'
-
+version: "3"
 services:
+  envoy:
+    image: envoyproxy/envoy-dev:b145180d17cac80aa5f9a7801429d52017fea6d1
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+  forntend:
+    build: ./frontend
+    ports:
+      - 3000:3000
   backend:
     build: ./backend
     ports:
-      - "8080:8080"
-    networks:
-      - app-network
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
+      - 50051:50051

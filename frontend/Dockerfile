@@ -1,23 +1,20 @@
-# Use the official Node.js image as the base image
-FROM node:alpine
+FROM node:18-alpine
+RUN mkdir -p /app
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the container
+COPY . .
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install only production dependencies
+RUN npm install 
 
-# Copy the remaining application code to the container
-COPY . .
+# Copy the rest of the application code
 
-# Build the React app for production
-RUN npm run build
 
-# Expose port 80 to the outside world
-EXPOSE 8080
 
-# Start the React app
-CMD ["npm", "start"]
+# Expose port 3000 (the default port for React apps)
+EXPOSE 3000
+
+# Serve the built files
+CMD [ "npm", "start" ]
